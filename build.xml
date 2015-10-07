@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="StaffDepartment" default="all" basedir=".">
+    <description>The Staff Department application</description>
+    <property file="config-man-build.properties"/>
+
+    <path id="classpath">
+        <pathelement location="${src.dir}/"/>
+        <fileset dir="${tools.dir}" includes="tools.jar"/>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}" quiet="true"/>
+        <delete dir="${dist.dir}" quiet="true"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <echo>Java compillation with the debug option: ${debug.mode}</echo>
+        <javac destdir="${build.dir}" debug="${debug.mode}" classpathref="classpath">
+            <src path="${src.dir}"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${dist.dir}/${app.name}.jar">
+            <fileset dir="${build.dir}">
+                <exclude name="**/web/**"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="war">
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}" includes="*.properties"/>
+        </copy>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includes="**/web/**" classpathref="classpath" debug="on">
+        </javac>
+        <war destfile="${dist.dir}/${app.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <fileset dir="${web.dir}"/>
+            <classes dir="${build.dir}">
+                <include name="**/staffdepartment/**/*.class"/>
+            </classes>
+            <classes dir="${build.dir}">
+                <include name="**/*.properties"/>
+            </classes>
+            <lib dir="${lib.dir}"/>
+            <lib dir="${dist.dir}">
+                <include name="${app.name}.jar"/>
+            </lib>
+        </war>
+        <delete file="${dist.dir}/${app.name}.jar"/>
+
+        <!--deploy to tomcat (copying war to deploy directory)-->
+        <copy todir="${tomcat.deploy.dir}">
+            <fileset dir="${dist.dir}" includes="${app.name}.war"/>
+        </copy>
+
+    </target>
+
+    <target name="all" depends="clean, jar, war"/>
+
+    <target name="copy.web.modules" >
+        <copy todir="${tomcat.deploy.dir}/StaffDepartment" overwrite="true" failonerror="false">
+            <fileset dir="web">
+                <include name="**/*.*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!--<target name="build-clean" depends="clean,compile"/>-->
+    <!--<target name="buildonly" depends="compile"/>-->
+
+</project>

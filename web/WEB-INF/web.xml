@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <description>StaffDepartment web descriptor.</description>
+    <filter>
+        <filter-name>UTF8EncodingFilter</filter-name>
+        <filter-class>ifmo.staffdepartment.filters.UTF8EncodingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>UTF8EncodingFilter</filter-name>
+        <servlet-name>action</servlet-name>
+    </filter-mapping>
+
+    <!--<listener>-->
+    <!--<listener-class>ifmo.staffdepartment.listeners.HTTPSessionListener</listener-class>-->
+    <!--</listener>-->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>ifmo.staffdepartment.ApplicationActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/conf/struts-config.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <init-param>
+            <param-name>chainConfig</param-name>
+            <param-value>org/apache/struts/tiles/chain-config.xml</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>-1</session-timeout>
+    </session-config>
+    <mime-mapping>
+        <extension>css</extension>
+        <mime-type>text/css</mime-type>
+    </mime-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!--<error-page>-->
+        <!--<exception-type>java.lang.Exception</exception-type>-->
+        <!--<location>/pages/exception.jsp</location>-->
+    <!--</error-page>-->
+
+    <!--<error-page>-->
+        <!--<error-code>500</error-code>-->
+        <!--<location>/pages/exception.jsp</location>-->
+    <!--</error-page>-->
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/pages/not_found.jsp</location>
+    </error-page>
+    
+</web-app>
